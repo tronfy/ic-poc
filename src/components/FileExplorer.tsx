@@ -1,9 +1,17 @@
+import { File } from '../types'
 import FileEntry from './FileEntry'
 
-function FileExplorer() {
+type FileExplorerProps = {
+  files: File[]
+  onFileSelect: (file: File) => void
+}
+
+function FileExplorer({ files, onFileSelect }: FileExplorerProps) {
   return (
     <ul>
-      <FileEntry name="Exemplo.java" content="" selected />
+      {files.map(file => (
+        <FileEntry key={file.name} {...file} onClick={() => onFileSelect(file)} />
+      ))}
     </ul>
   )
 }

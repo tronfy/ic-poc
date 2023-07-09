@@ -3,15 +3,16 @@ import CodeEditor from '@uiw/react-textarea-code-editor'
 type EditorProps = {
   code: string
   setCode: (code: string) => void
+  language: string
 }
 
-function Editor({ code, setCode }: EditorProps): JSX.Element {
+function Editor({ code, setCode, language }: EditorProps): JSX.Element {
   return (
     <CodeEditor
       value={code}
-      language="java"
+      language={language}
       placeholder="// seu código aqui"
-      onChange={evn => setCode(evn.target.value)}
+      onChange={e => setCode(e.target.value)}
       padding={15}
       className="h-full"
       style={{
