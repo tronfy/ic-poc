@@ -4,7 +4,7 @@ import Editor from './components/Editor'
 import FileExplorer from './components/FileExplorer'
 
 function App() {
-  const [files, setFiles] = useState([
+  const [files] = useState([
     {
       id: '0',
       name: 'Exemplo.java',
