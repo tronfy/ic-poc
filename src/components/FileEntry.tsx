@@ -6,7 +6,7 @@ type FileEntryProps = {
   onDelete?: () => void
 }
 
-function FileEntry({ name, selected = false, onClick, onDelete }: FileEntryProps): JSX.Element {
+function FileEntry({ name, onClick, onDelete }: FileEntryProps): JSX.Element {
   return (
     <div className={`flex justify-between text-sm pl-2 py-0.5`}>
       <li onClick={onClick} className="bg-opacity-10 hover:bg-opacity-10 hover:bg-white hover:cursor-pointer flex-1">
