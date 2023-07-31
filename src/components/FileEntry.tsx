@@ -3,18 +3,22 @@ type FileEntryProps = {
   content: string
   selected?: boolean
   onClick?: () => void
+  onDelete?: () => void
 }
 
-function FileEntry({ name, selected = false, onClick }: FileEntryProps): JSX.Element {
+function FileEntry({ name, selected = false, onClick, onDelete }: FileEntryProps): JSX.Element {
   return (
-    <li
-      className={`text-sm px-2 py-0.5 bg-opacity-10 hover:bg-opacity-10 hover:bg-white hover:cursor-pointer ${
-        selected ? 'bg-opacity-20 bg-blue-700' : ''
-      }`}
-      onClick={onClick}
-    >
-      {name}
-    </li>
+    <div className={`flex justify-between text-sm pl-2 py-0.5`}>
+      <li onClick={onClick} className="bg-opacity-10 hover:bg-opacity-10 hover:bg-white hover:cursor-pointer flex-1">
+        {name}
+      </li>
+      <span
+        onClick={onDelete}
+        className="px-2 text-center text-slate-400 bg-opacity-10 hover:bg-opacity-10 hover:bg-white hover:cursor-pointer"
+      >
+        ×
+      </span>
+    </div>
   )
 }
 
