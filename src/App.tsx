@@ -1,28 +1,40 @@
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { createId } from '@paralleldrive/cuid2'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Editor from './components/Editor'
 import FileExplorer from './components/FileExplorer'
 import { File } from './types'
 
+const getLocalStorageFiles = (): File[] | undefined => {
+  const files = localStorage.getItem('files')
+  if (files) return JSON.parse(files) as File[]
+  return undefined
+}
+
+const saveLocalStorageFiles = (files: File[]) => {
+  localStorage.setItem('files', JSON.stringify(files))
+}
+
 function App() {
-  const [files, setFiles] = useState([
-    {
-      id: createId(),
-      name: 'Exemplo.java',
-      content: `public class Exemplo {\n    public static void main(String[] args) {\n        System.out.println("Olá, mundo!");\n    }\n}\n`,
-    },
-    {
-      id: createId(),
-      name: 'Pessoa.java',
-      content: `public class Pessoa {}\n`,
-    },
-    {
-      id: createId(),
-      name: 'teste.txt',
-      content: `arquivo de texto, não tem realce de sintaxe \n`,
-    },
-  ])
+  const [files, setFiles] = useState(
+    getLocalStorageFiles() || [
+      {
+        id: createId(),
+        name: 'Exemplo.java',
+        content: `public class Exemplo {\n    public static void main(String[] args) {\n        System.out.println("Olá, mundo!");\n    }\n}\n`,
+      },
+      {
+        id: createId(),
+        name: 'Pessoa.java',
+        content: `public class Pessoa {}\n`,
+      },
+      {
+        id: createId(),
+        name: 'teste.txt',
+        content: `arquivo de texto, não tem realce de sintaxe \n`,
+      },
+    ]
+  )
 
   const [file, setFile] = useState(files[0])
 
@@ -39,10 +51,18 @@ function App() {
     setFiles(files.filter(f => f.id !== file.id))
   }
 
+  // every 2 seconds, save files to local storage
+  useEffect(() => {
+    const interval = setInterval(() => {
+      saveLocalStorageFiles(files)
+    }, 2000)
+    return () => clearInterval(interval)
+  }, [files])
+
   return (
     <div className="h-screen">
       <PanelGroup autoSaveId="main" direction="horizontal">
-        <Panel minSize={10} maxSize={35} defaultSize={15}>
+        <Panel minSize={15} maxSize={35} defaultSize={15}>
           <FileExplorer files={files} onFileSelect={setFile} createFile={createFile} onFileDelete={deleteFile} />
         </Panel>
         <PanelResizeHandle style={{ width: '5px' }} />
@@ -51,7 +71,7 @@ function App() {
             <Editor
               code={file.content}
               setCode={code => {
-                file.content = code
+                setFiles(files.map(f => (f.id === file.id ? { ...f, content: code } : f)))
               }}
               language={file.name.split('.').pop() || ''}
             />
